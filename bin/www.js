@@ -3,7 +3,7 @@
 /**
  * Module dependencies.
  */
-
+require('dotenv').config()
 const debug = require('debug')('trello-board-server:server')
 const http = require('http')
 const app = require('../app')
