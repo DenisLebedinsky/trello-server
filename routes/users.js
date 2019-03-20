@@ -1,16 +1,15 @@
-require('dotenv').config()
-const CryptoJS = require('crypto-js')
 /* eslint-disable no-use-before-define */
 const express = require('express')
 
 const router = express.Router()
 const jwt = require('jsonwebtoken')
-const User = require('./../models/User')
+require('dotenv').config()
+const ControllerUser = require('./controller/controllerUser')
 
 /* GET users listing. */
 // eslint-disable-next-line func-names
 router.get('/', function(req, res) {
-  res.send('respond with a resource')
+  ControllerUser.findall(res)
 })
 
 // example for copy
@@ -29,44 +28,18 @@ router.post('/', verifyToken, (req, res) => {
 })
 
 router.post('/login', (req, res) => {
-  // Mock user
-  const user = {
-    id: 1,
-    username: 'brad',
-    email: 'brad@gmail.com',
-  }
+  const { email, password } = req.body
 
-  jwt.sign(
-    { user },
-    process.env.SECRETKEY,
-    { expiresIn: '30d' },
-    (err, token) => {
-      if (err) throw err
-      res.json({ token })
-    },
-  )
+  if (!email) res.send('email is empty').status(200)
+
+  ControllerUser.auth(email, password, res)
 })
 
 router.post('/signup', (req, res) => {
   const { name, email, password } = req.body
-  const salt = `${Date.now()}`
 
   if (email && password) {
-    const hashPwd = CryptoJS.PBKDF2(password, process.env.SECRETKEY, salt, {
-      keySize: 128 / 32,
-    })
-
-    User.create({
-      name,
-      email,
-      password: hashPwd,
-      salt,
-    }).then(data => {
-      console.log('user created: ', data.id)
-      console.log('user password', data.password)
-    })
-
-    res.sendStatus(201)
+    ControllerUser.create(name, email, password, res)
   } else {
     res.sendStatus(500)
   }

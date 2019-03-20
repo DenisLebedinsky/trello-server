@@ -1,26 +1,16 @@
-const Sequelize = require('sequelize')
-
-const sequelize = require('./../connectionDB/index')
-
-const User = sequelize.define('user', {
-  name: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  email: {
-    type: Sequelize.STRING,
-    unique: true,
-    allowNull: false,
-  },
-  password: {
-    type: Sequelize.STRING,
-    unique: true,
-    allowNull: false,
-  },
-  slat: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-})
-
-module.exports = User
+module.exports = (sequelize, DataTypes) => {
+  const User = sequelize.define(
+    'User',
+    {
+      FirstName: DataTypes.STRING,
+      email: { type: DataTypes.STRING, unique: true },
+      password: DataTypes.STRING,
+      salt: DataTypes.STRING,
+    },
+    {},
+  )
+  User.associate = function(models) {
+    // associations can be defined here
+  }
+  return User
+}
