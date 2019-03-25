@@ -2,8 +2,10 @@
 const express = require('express')
 
 const router = express.Router()
+const passport = require('passport')
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 const jwt = require('jsonwebtoken')
-require('dotenv').config()
+
 const ControllerUser = require('./controller/controllerUser')
 
 /* GET users listing. */
@@ -29,9 +31,6 @@ router.post('/', verifyToken, (req, res) => {
 
 router.post('/login', (req, res) => {
   const { email, password } = req.body
-
-  if (!email) res.send('email is empty').status(200)
-
   ControllerUser.auth(email, password, res)
 })
 
@@ -45,8 +44,63 @@ router.post('/signup', (req, res) => {
   }
 })
 
-// Athorization : Bearer <access_token>
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: 'http://localhost:3000/users/auth/google/callback',
+    },
+    (accessToken, refreshToken, profile, done) => {
+      ControllerUser.findOrCreate(profile, done)
+    },
+  ),
+)
 
+router.get(
+  '/auth/google',
+  passport.authenticate('google', {
+		scope: [
+			'https://www.googleapis.com/auth/userinfo.email',
+			'https://www.googleapis.com/auth/plus.login'
+		],
+  }),
+)
+
+router.get('/auth/google/callback', passport.authenticate('google'), (req, res,) => {
+
+	const user = {
+		FirsName:req.user.FirsName,
+		email: req.user.email,
+		googleID: req.user.email
+	}
+
+	res.render('close', { title: 'это окно будет закрыто', mainjs:'alert(123213)'})
+/*
+	jwt.sign(
+		{ user },
+		process.env.SECRETKEY,
+		{ expiresIn: '30d' },
+		(err, token) => {
+			if (err) throw err
+			res.json({
+				token,
+			})
+		},
+	)*/
+})
+
+passport.serializeUser(function(user, cb) {
+  cb(null, user)
+})
+//
+passport.deserializeUser(function(obj, cb) {
+  cb(null, obj)
+})
+
+
+// Athorization : Bearer <access_token>
+//for example -- delete in next step
 function verifyToken(req, res, next) {
   // Get auth header value
   const bearerHeader = req.headers.authorization

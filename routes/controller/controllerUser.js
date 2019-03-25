@@ -60,6 +60,17 @@ const ControllerUser = {
       }
     })
   },
+	findOrCreate: (profile, done) => {
+		models.User.findOrCreate({
+      where: { googleID: profile.id },
+      defaults: {
+        FirstName: profile.displayName,
+        googleID: profile.id,
+				email: profile.emails[0].value
+      },
+    }).then(([user]) => done(null, user), err => done(err, null))
+	},
+  
 }
 
 module.exports = ControllerUser
