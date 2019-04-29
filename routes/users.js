@@ -49,7 +49,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: 'http://localhost:3000/users/auth/google/callback',
+      callbackURL: 'http://localhost:3001/users/auth/google/callback',
     },
     (accessToken, refreshToken, profile, done) => {
       ControllerUser.findOrCreate(profile, done)
@@ -75,19 +75,24 @@ router.get('/auth/google/callback', passport.authenticate('google'), (req, res,)
 		googleID: req.user.email
 	}
 
-	res.render('close', { title: 'это окно будет закрыто', mainjs:'alert(123213)'})
-/*
 	jwt.sign(
-		{ user },
-		process.env.SECRETKEY,
-		{ expiresIn: '30d' },
-		(err, token) => {
-			if (err) throw err
-			res.json({
-				token,
-			})
-		},
-	)*/
+    { user },
+    process.env.SECRETKEY,
+    { expiresIn: '30d' },
+    (err, token) => {
+      if (err) throw err
+      
+			const jsonData = JSON.stringify({ token });
+			
+			res.set({ 'content-type': 'text/html; charset=utf-8' });
+			
+			return res.send(`<script>window.opener.postMessage(${jsonData}, '*');window.close()</script>`);
+
+    },
+  )
+	
+		
+
 })
 
 passport.serializeUser(function(user, cb) {
