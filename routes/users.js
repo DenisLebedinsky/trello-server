@@ -80,12 +80,9 @@ router.get('/auth/google/callback', passport.authenticate('google'), (req, res,)
     process.env.SECRETKEY,
     { expiresIn: '30d' },
     (err, token) => {
-      if (err) throw err
-      
-			const jsonData = JSON.stringify({ token });
-			
-			res.set({ 'content-type': 'text/html; charset=utf-8' });
-			
+      if (err) throw err      
+			const jsonData = JSON.stringify({ token });			
+			res.set({ 'content-type': 'text/html; charset=utf-8' });			
 			return res.send(`<script>window.opener.postMessage(${jsonData}, '*');window.close()</script>`);
 
     },
@@ -105,23 +102,15 @@ passport.deserializeUser(function(obj, cb) {
 
 
 // Athorization : Bearer <access_token>
-//for example -- delete in next step
 function verifyToken(req, res, next) {
-  // Get auth header value
   const bearerHeader = req.headers.authorization
-  // Check if bearer is undefined
   if (typeof bearerHeader !== 'undefined') {
-    // Split at the space
-    const bearer = bearerHeader.split(' ')
-    // Get token from array
-    const bearerToken = bearer[1]
-    // Set the token
+    const bearer = bearerHeader.split(' ')   
+    const bearerToken = bearer[1] 
     req.token = bearerToken
     next()
-  } else {
-    // Forbidden
+  } else {  
     res.sendStatus(403)
   }
 }
-
 module.exports = router

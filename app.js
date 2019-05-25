@@ -1,5 +1,6 @@
 const createError = require('http-errors')
 const express = require('express')
+const cors = require('cors')
 const path = require('path')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
@@ -7,6 +8,7 @@ const bodyParser = require('body-parser')
 const passport = require('passport')
 const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users')
+const workRouter = require('./routes/workPlace')
 
 const app = express()
 
@@ -24,7 +26,8 @@ app.use(bodyParser.json({ limit: '50mb' }))
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
 
 app.use('/', indexRouter)
-app.use('/users', usersRouter)
+app.use('/users', cors(), usersRouter)
+app.use('/workplace', cors(), workRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
