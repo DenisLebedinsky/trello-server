@@ -4,8 +4,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   Board.associate = function(models) {
 		Board.belongsTo(models.WorkPlace)
-		Board.BelongsToMany(models.User)
 		Board.hasMany(models.Colums)
+		Board.belongsToMany(models.User, { through: 'UserBoard' })
   };
   return Board;
 };

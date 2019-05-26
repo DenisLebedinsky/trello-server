@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   Colums.associate = function(models) {
 		Colums.belongsTo(models.Board)
-		Colums.hasMany(model.Task)
+		Colums.hasMany(models.Task)
   };
 	return Colums;
 };

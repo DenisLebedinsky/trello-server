@@ -6,7 +6,7 @@ const passport = require('passport')
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 const jwt = require('jsonwebtoken')
 
-const ControllerUser = require('./controller/controllerUser')
+const ControllerUser = require('../controllers/controllerUser')
 
 /* GET users listing. */
 // eslint-disable-next-line func-names

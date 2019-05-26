@@ -1,6 +1,6 @@
 const crypto = require('crypto')
 const jwt = require('jsonwebtoken')
-const models = require('./../../models')
+const models = require('./../models')
 
 const ControllerUser = {
   create: (name, email, password, res) => {

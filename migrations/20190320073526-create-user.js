@@ -7,7 +7,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      FirstName: {
+      firstName: {
         type: Sequelize.STRING,
       },
       email: {
@@ -18,6 +18,9 @@ module.exports = {
         type: Sequelize.STRING,
       },
       salt: {
+        type: Sequelize.STRING,
+      },
+      googleId: {
         type: Sequelize.STRING,
       },
       createdAt: {
