@@ -47,9 +47,13 @@ const ControllerWorkPlace = {
       })
   },
   delete: (id, res) => {
-    models.WorkPlace.delete({ id })
-      .then(s => {
-        res.send(s.status)
+    models.WorkPlace.findById(id)
+      .then(workplace => workplace.destroy())
+      .catch(err => {
+        if (err) throw err
+      })
+      .then(result => {
+        res.send(result)
       })
       .catch(err => {
         if (err) throw err
