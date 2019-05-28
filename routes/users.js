@@ -5,7 +5,7 @@ const router = express.Router()
 const passport = require('passport')
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 const jwt = require('jsonwebtoken')
-
+const verifyToken = require('../controllers/verefyToken')
 const ControllerUser = require('../controllers/controllerUser')
 
 /* GET users listing. */
@@ -14,19 +14,10 @@ router.get('/', function(req, res) {
   ControllerUser.findall(res)
 })
 
-// example for copy
-router.post('/', verifyToken, (req, res) => {
-  jwt.verify(req.token, process.env.SECRETKEY, (err, authData) => {
-    if (err) throw err
-    if (err) {
-      res.sendStatus(403)
-    } else {
-      res.json({
-        message: 'post created',
-        authData,
-      })
-    }
-  })
+// example for copy 
+router.post('/', verifyToken, async (req, res) => {
+	const user = await ControllerUser.check(req, res);
+	res.send(user)
 })
 
 router.post('/login', (req, res) => {
@@ -49,7 +40,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: 'http://localhost:3001/users/auth/google/callback',
+      callbackURL: process.env.GOOGLE_CALLBACK_URL,
     },
     (accessToken, refreshToken, profile, done) => {
       ControllerUser.findOrCreate(profile, done)
@@ -100,17 +91,4 @@ passport.deserializeUser(function(obj, cb) {
   cb(null, obj)
 })
 
-
-// Athorization : Bearer <access_token>
-function verifyToken(req, res, next) {
-  const bearerHeader = req.headers.authorization
-  if (typeof bearerHeader !== 'undefined') {
-    const bearer = bearerHeader.split(' ')   
-    const bearerToken = bearer[1] 
-    req.token = bearerToken
-    next()
-  } else {  
-    res.sendStatus(403)
-  }
-}
 module.exports = router

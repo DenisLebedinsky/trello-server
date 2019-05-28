@@ -54,11 +54,24 @@ const ControllerUser = {
     models.User.findOrCreate({
       where: { googleID: profile.id },
       defaults: {
-        FirstName: profile.displayName,
+        firstName: profile.displayName,
         googleID: profile.id,
         email: profile.emails[0].value,
       },
     }).then(([user]) => done(null, user), err => done(err, null))
+  },
+  check: async (req, res) => {
+    const verToken = await jwt.verify(req.token, process.env.SECRETKEY)
+
+    if (!verToken) res.sendStatus(403)
+
+    const result = await models.User.findOne({
+      where: { email: verToken.user.email },
+    })
+
+    if (!result) res.sendStatus(403)
+
+    return result
   },
 }
 

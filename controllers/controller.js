@@ -1,90 +1,80 @@
 const controller = {
-  create: (model, data, res) => {
-    model
-      .create(data)
-      .then(item => {
-        if (item) res.sendStatus(201)
-      })
-      .catch(err => {
-        if (err) throw err
-      })
+  create: async (model, data, res) => {
+    const result = model.create(data)
+
+    if (!result) res.send('Error: not created')
+
+    res.sendStatus(201)
   },
-  createWithDependence: (model, id, createMethod, data, res) => {
-    model
-      .findOne({ where: { id } })
-      .then(item => {
-        item[createMethod](data)
-          .then(result => res.send(`craeted ${result.title}`))
-          .catch(err => {
-            if (err) throw err
-          })
-      })
-      .catch(err => {
-        if (err) throw err
-      })
+
+  createWithDependence: async (model, id, createMethod, data, res) => {
+    const parent = await model.findOne({ where: { id } })
+
+    if (!parent) res.send('Error: Record by id was not found!')
+
+    const result = await parent[createMethod](data)
+
+    if (!result) res.send('Error: Record was not created')
+
+    res.send(`Craeted ${result.title}`)
   },
-  findAll: (model, res) => {
-    model
-      .findAll()
-      .then(users => {
-        res.send(users)
-      })
-      .catch(err => {
-        if (err) throw err
-      })
+
+  findAll: async (model, res) => {
+    const result = await model.findAll()
+
+    if (!result) res.send('Error: Records was not found')
+
+    res.send(result)
   },
-  findAllforParent: (model, includeModel, includeName, attributes, id, res) => {
-    model
-      .findOne({
-        where: { id },
-        include: [{ model: includeModel, attributes }],
-      })
-      .then(result => res.send(result[includeName]))
-      .catch(err => {
-        if (err) throw err
-      })
+
+  findAllforParent: async (
+    model,
+    includeModel,
+    includeName,
+    attributes,
+    id,
+    res,
+  ) => {
+    const result = await model.findOne({
+      where: { id },
+      include: [{ model: includeModel, attributes }],
+    })
+
+    if (!result) res.send('Error: Records was not found')
+
+    res.send(result[includeName])
   },
-  findbyId: (model, id, res) => {
-    model
-      .findById(id)
-      .then(data => res.send(data))
-      .catch(err => {
-        if (err) throw err
-      })
+
+  findbyId: async (model, id, res) => {
+    const result = await model.findById(id)
+
+    if (!result) res.send('Error: Records was not found')
+
+    res.send(result)
   },
-  save: (model, id, data, res) => {
-    model
-      .findById(id)
-      .then(item => {
-				if (!item) {
-					res.send(`Id = ${id} not found in workplaces`)
-					return ;
-				}
-          item
-            .update(data)
-            .then(result => res.send(result))
-            .catch(err => {
-              if (err) throw err
-            })
-        
-      })
-      .catch(err => {
-        if (err) throw err
-      })
+
+  save: async (model, id, data, res) => {
+    const item = await model.findById(id)
+
+    if (!item) res.send(`Record id = ${id} not found`)
+
+    const result = await item.update(data)
+
+    if (!result) res.send(`Error: id = ${id} was not update`)
+
+    res.send(`Record was update`)
   },
-  delete: (model, id, res) => {
-    model
-      .findById(id)
-      .then(item => item.destroy())
-      .catch(err => {
-        if (err) throw err
-      })
-      .then(result => {
-        res.send(result)
-      })
-      .catch(err => {
-        if (err) throw err
-      })
+
+  delete: async (model, id, res) => {
+    const item = await model.findById(id)
+
+    if (!item) res.send(`Record with id = ${id} not found`)
+
+    const result = await item.destroy()
+
+    if (!result) res.send(`Error: id = ${id} was not deleted`)
+
+    res.send('Record was deleted')
   },
 }
 
