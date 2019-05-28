@@ -1,22 +1,22 @@
 const models = require('../models')
 const controller = require('./controller')
 
-const ControllerBoard = {
+const ControllerTask = {
   create: (id, data, res) =>
     controller.createWithDependence(
-      models.WorkPlace,
+      models.Colums,
       id,
-			'createBoard',
+      'createTask',
       { title: data.title },
       res,
     ),
 
-  findAllforParent: (id, res) => {
+  findAllforUser: (id, res) => {
     controller.findAllforParent(
-      models.WorkPlace,
+      models.Colums,
       models.Board,
       'board',
-      ['title', 'id'],
+      ['title', 'position', 'description', 'id'],
       id,
       res,
     )
@@ -28,4 +28,4 @@ const ControllerBoard = {
   delete: (id, res) => controller.delete(models.Board, id, res),
 }
 
-module.exports = ControllerBoard
+module.exports = ControllerTask

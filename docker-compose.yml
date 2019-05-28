@@ -6,7 +6,9 @@ services:
     restart: always
     container_name: Postgres
     environment:
-      POSTGRES_PASSWORD: example
+      POSTGRES_USER: 'agent'
+      POSTGRES_PASSWORD: 'admin'
+      POSTGRES_DB: 'trello'
     volumes:
       - data:/var/lib/postgresql/data
     ports:

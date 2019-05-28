@@ -20,7 +20,7 @@ module.exports = {
       salt: {
         type: Sequelize.STRING,
       },
-      googleId: {
+      googleID: {
         type: Sequelize.STRING,
       },
       createdAt: {

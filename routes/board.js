@@ -1,22 +1,22 @@
 /* eslint-disable func-names */
 const express = require('express')
-const controllerWorkPlace = require('../controllers/controllerWorkPlace')
+const controllerBoard = require('../controllers/controllerBoard')
 
 const router = express.Router()
 
 /* POST */
 router.post('/create', function(req, res) {
   if (req.body.id) {
-    controllerWorkPlace.create(req.body.id, req.body.data, res)
+    controllerBoard.create(req.body.id, req.body.data, res)
   } else {
-    res.send('the id parameter was not found')
+    res.send('the userId parameter was not found')
   }
 })
 
 /* GET */
 router.get('/', function(req, res) {
   if (req.query.id) {
-    controllerWorkPlace.findbyId(req.query.id, res)
+    controllerBoard.findbyId(req.query.id, res)
   } else {
     res.send('the id parameter was not found')
   }
@@ -25,7 +25,7 @@ router.get('/', function(req, res) {
 /* GET */
 router.get('/byUser', function(req, res) {
   if (req.query.id) {
-    controllerWorkPlace.findAllforParent(req.query.id, res)
+    controllerBoard.findAllforParent(req.query.id, res)
   } else {
     res.send('the id parameter was not found')
   }
@@ -34,7 +34,7 @@ router.get('/byUser', function(req, res) {
 /* UPDATE */
 router.patch('/update', function(req, res) {
   if (req.body.id) {
-    controllerWorkPlace.save(req.body.id, req.body.data, res)
+    controllerBoard.save(req.body.id, req.body.data, res)
   } else {
     res.send('the id parameter was not found')
   }
@@ -43,7 +43,7 @@ router.patch('/update', function(req, res) {
 /* DELETE */
 router.delete('/delete', function(req, res) {
   if (req.query.id) {
-    controllerWorkPlace.delete(req.query.id, res)
+    controllerBoard.delete(req.query.id, res)
   } else {
     res.send('the id parameter was not found')
   }

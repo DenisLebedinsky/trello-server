@@ -1,64 +1,31 @@
 const models = require('../models')
+const controller = require('./controller')
 
 const ControllerWorkPlace = {
-  create: (id, title, res) => {
-    models.User.findOne({ where: { id } })
-      .then(user => {
-        user
-          .createWorkPlace({ title })
-          .then(data => res.send(`craete ${data.title}`))
-          .catch(err => {
-            if (err) throw err
-          })
-      })
-      .catch(err => {
-        if (err) throw err
-      })
+  create: (id, data, res) =>
+    controller.createWithDependence(
+      models.User,
+      id,
+      'createWorkPlace',
+      { title: data.title },
+      res,
+    ),
+
+  findAllforParent: (id, res) => {
+    controller.findAllforParent(
+      models.User,
+      models.WorkPlace,
+      'WorkPlaces',
+      ['title', 'id'],
+      id,
+      res,
+    )
   },
-  findAllforUser: (id, res) => {
-    models.User.findOne({
-      where: { id },
-      include: [{ model: models.WorkPlace, attributes: ['title', 'id'] }],
-    })
-      .then(data => res.send(data.WorkPlaces))
-      .catch(err => {
-        if (err) throw err
-      })
-  },
-  findbyId: (id, res) => {
-    models.WorkPlace.findById(id)
-      .then(data => res.send(data))
-      .catch(err => {
-        if (err) throw err
-      })
-  },
-  save: (id, data, res) => {
-    models.WorkPlace.findById(id)
-      .then(workplace =>
-        workplace
-          .update(data)
-          .then(result => res.send(result))
-          .catch(err => {
-            if (err) throw err
-          }),
-      )
-      .catch(err => {
-        if (err) throw err
-      })
-  },
-  delete: (id, res) => {
-    models.WorkPlace.findById(id)
-      .then(workplace => workplace.destroy())
-      .catch(err => {
-        if (err) throw err
-      })
-      .then(result => {
-        res.send(result)
-      })
-      .catch(err => {
-        if (err) throw err
-      })
-  },
+  findbyId: (id, res) => controller.findbyId(models.WorkPlace, id, res),
+
+  save: (id, data, res) => controller.save(models.WorkPlace, id, data, res),
+
+  delete: (id, res) => controller.delete(models.WorkPlace, id, res),
 }
 
 module.exports = ControllerWorkPlace

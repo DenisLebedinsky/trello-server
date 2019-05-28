@@ -10,6 +10,9 @@ module.exports = {
       title: {
         type: Sequelize.STRING,
       },
+      createdBy: {
+        type: Sequelize.INTEGER,
+      },
       UserId: {
         type: Sequelize.INTEGER,
       },

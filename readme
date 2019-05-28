@@ -1,0 +1,13 @@
+
+#if port alredy use
+```
+kill $(lsof -t -i:5432)
+```
+#start docker
+```
+docker-compose up -d
+```
+$connect to db whis psql:
+```
+docker-compose exec db psql -U agent trello
+```

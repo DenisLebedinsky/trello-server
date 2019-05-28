@@ -1,6 +1,7 @@
 const crypto = require('crypto')
 const jwt = require('jsonwebtoken')
 const models = require('./../models')
+const controller = require('./controller')
 
 const ControllerUser = {
   create: (name, email, password, res) => {
@@ -11,28 +12,17 @@ const ControllerUser = {
       .update(password)
       .digest('hex')
 
-    models.User.create({
+    const data = {
       FirstName: name,
       email,
       password: hashPwd,
       salt,
-    })
-      .then(user => {
-        if (user) res.sendStatus(201)
-      })
-      .catch(err => {
-        if (err) {
-          res.send('is duplicate email')
-          res.Status(200)
-        }
-      })
+    }
+
+    controller.create(models.User, data, res)
   },
 
-  findall: res => {
-    models.User.findAll().then(users => {
-      res.send(users)
-    })
-  },
+  findall: res => controller.findAll(models.User, res),
 
   auth: (_email, password, res) => {
     models.User.findOne({ where: { email: _email } }).then(user => {
@@ -60,17 +50,16 @@ const ControllerUser = {
       }
     })
   },
-	findOrCreate: (profile, done) => {
-		models.User.findOrCreate({
+  findOrCreate: (profile, done) => {
+    models.User.findOrCreate({
       where: { googleID: profile.id },
       defaults: {
         FirstName: profile.displayName,
         googleID: profile.id,
-				email: profile.emails[0].value
+        email: profile.emails[0].value,
       },
     }).then(([user]) => done(null, user), err => done(err, null))
-	},
-  
+  },
 }
 
 module.exports = ControllerUser

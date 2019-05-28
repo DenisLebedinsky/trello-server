@@ -1,6 +1,7 @@
 module.exports = (sequelize, DataTypes) => {
   const Board = sequelize.define('Board', {
-    title: DataTypes.STRING
+		title: DataTypes.STRING,
+		createdBy: DataTypes.STRING
   }, {});
   Board.associate = function(models) {
 		Board.belongsTo(models.WorkPlace)

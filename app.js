@@ -9,6 +9,7 @@ const passport = require('passport')
 const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users')
 const workRouter = require('./routes/workPlace')
+const board = require('./routes/board')
 
 const app = express()
 
@@ -28,6 +29,7 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
 app.use('/', indexRouter)
 app.use('/users', cors(), usersRouter)
 app.use('/workplace', cors(), workRouter)
+app.use('/board', cors(), board)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
